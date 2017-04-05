@@ -40,13 +40,15 @@ app.get('/todos/:id',(req,res) => {
   var id = req.params.id;
   if(ObjectID.isValid(id)){
     Todo.findById(id).then((user) => {
-      console.log(user);
+      if(!user){
+        return res.status(404).send('prob');
+      }
       res.status(200).send(user);
     },(e) => {
-      console.log(e);
+      res.status(400).send();
     });
   }else {
-    res.status(400).send('prob');
+    res.status(404).send('prob');
   }
 });
 

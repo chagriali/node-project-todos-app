@@ -1,13 +1,16 @@
 const expect = require('expect');
 const supertest = require('supertest');
 
+const {ObjectID} = require('mongodb');
 const {app} = require('./../server');
 const {Todo} = require('./../models/todo');
 
 
 var todos = [{
+  _id : new ObjectID(),
   text : "some text here"
 },{
+  _id : new ObjectID(),
   text : "some text here2"
 }];
 
@@ -58,4 +61,21 @@ describe('Get /todos',() =>{
       })
       .end(done);
     });
+});
+
+describe('Get /todo/id',() => {
+  it('sould return a valid user' ,(done) => {
+    supertest(app)
+    .get(`/todos/${todos[0]._id.toHexString()}`)
+    .expect(200)
+    .end(done);
+  });
+
+  it('sould  not return a valid user' ,(done) => {
+    supertest(app)
+    .get(`/todos/${(new ObjectID()).toHexString()}`)
+    .expect(200)
+    .end(done);
+  });
+
 });
