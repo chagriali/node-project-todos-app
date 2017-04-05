@@ -1,7 +1,9 @@
 
+
 const express = require('express');
 const bodyParser = require('body-parser');
 
+var {ObjectID} = require('mongodb');
 var { mongoose} = require('./db/mongoose');
 var {Todo} = require('./models/todo');
 var {User} = require('./models/user');
@@ -15,7 +17,7 @@ app.use(bodyParser.json());
 
 app.post('/todos',(req,res) => {
   var newTodo = new Todo({
-    text : req.body.text 
+    text : req.body.text
   });
 
   newTodo.save().then((result) =>{
@@ -32,6 +34,20 @@ app.get('/todos',(req,res) => {
       todos
     })
   });
+});
+
+app.get('/todos/:id',(req,res) => {
+  var id = req.params.id;
+  if(ObjectID.isValid(id)){
+    Todo.findById(id).then((user) => {
+      console.log(user);
+      res.status(200).send(user);
+    },(e) => {
+      console.log(e);
+    });
+  }else {
+    res.status(400).send('prob');
+  }
 });
 
 
