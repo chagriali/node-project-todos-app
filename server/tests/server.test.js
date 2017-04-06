@@ -74,8 +74,34 @@ describe('Get /todo/id',() => {
   it('sould  not return a valid user' ,(done) => {
     supertest(app)
     .get(`/todos/${(new ObjectID()).toHexString()}`)
-    .expect(200)
+    .expect(404)
     .end(done);
   });
+
+});
+
+
+
+
+
+
+describe('Delete /todo/:id',() => {
+  it('should delete a todo',(done) =>{
+    supertest(app)
+    .delete(`/todos/${todos[0]._id.toHexString()}`)
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todo.text).toBe('some text here');
+    }).end(done);
+  });
+
+  it('should delete a todo',(done) =>{
+    supertest(app)
+    .delete(`/todos/123abc`)
+    .expect(404)
+    .end(done);
+  });
+
+
 
 });
