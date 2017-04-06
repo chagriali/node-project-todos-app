@@ -10,7 +10,7 @@ var {User} = require('./models/user');
 
 
 
-var port = process.PORT || 3005;
+var port = process.env.PORT || 3005;
 
 var app = express();
 app.use(bodyParser.json());
@@ -52,6 +52,21 @@ app.get('/todos/:id',(req,res) => {
   }
 });
 
+app.delete('/todos/:id',(req, res) => {
+  var id = req.params.id;
+  if(!ObjectID.isValid(id)){
+    return res.status(404).send();
+  }
+
+  Todo.findByIdAndRemove(id).then((todo) => {
+    if(!todo){
+      return res.status(404).send();
+    }
+    res.status(200).send(todo);
+  });
+
+
+});
 
 app.listen(port,() => {
   console.log(`started on port ${port}`);
